@@ -45,16 +45,65 @@ public class SpellingBee {
     //  that will find the substrings recursively.
     public void generate() {
         // YOUR CODE HERE — Call your recursive method!
+        makeWords("", letters);
+    }
+    public void makeWords(String word, String letters) {
+        if (letters.length() == 1) {
+            words.add(word);
+            words.add(word + letters.charAt(0));
+            return;
+        }
+        if(!word.isEmpty()){
+            System.out.println(word);
+            words.add(word);
+        }
+        for (int i = 0; i < letters.length(); i++) {
+            if (i == 0) {
+                makeWords(word + letters.charAt(i), letters.substring(i + 1));
+            }
+            else {
+                makeWords(word + letters.charAt(i), letters.substring(0, i) + letters.substring(i + 1));
+            }
+
+        }
     }
 
     // TODO: Apply mergesort to sort all words. Do this by calling ANOTHER method
     //  that will find the substrings recursively.
-    public void sort() {
+    public void sort(){
         // YOUR CODE HERE
+        words = mergeSort(0, words.size());
+
+    }
+    public ArrayList<String> mergeSort(int low, int high){
+        if(low == high){
+            ArrayList<String> temp = new ArrayList<String>();
+            temp.add(words.get(low));
+            return temp;
+        }
+        int med = (low + high) / 2;
+        ArrayList<String> tempOne = new ArrayList<String>();
+        tempOne = mergeSort(low, med);
+        ArrayList<String> tempTwo = new ArrayList<String>();
+        tempTwo = mergeSort(med + 1, high);
+
+        return
+
+    }
+    public ArrayList<String> merge(ArrayList<String> temp, ArrayList<String> tempTwo){
+        ArrayList<String> merged = new ArrayList<String>();
+        int a = 0;
+        int b = 0;
+        while(a < temp.size() && b < tempTwo.size()){
+            if(temp.get(a).compareTo(tempTwo.get(b)) < 0){
+                merged.add(temp.get(a));
+
+            }
+        }
     }
 
     // Removes duplicates from the sorted list.
-    public void removeDuplicates() {
+    public void removeDuplicates(){
         int i = 0;
         while (i < words.size() - 1) {
             String word = words.get(i);
