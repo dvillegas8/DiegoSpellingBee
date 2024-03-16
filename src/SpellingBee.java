@@ -47,16 +47,19 @@ public class SpellingBee {
         // YOUR CODE HERE — Call your recursive method!
         makeWords("", letters);
     }
+    // Recursive method that generates all the possible substrings and permutations of letters
     public void makeWords(String word, String letters) {
+        // Base Case
         if (letters.length() == 1) {
             words.add(word);
             words.add(word + letters.charAt(0));
             return;
         }
+        // So it doesn't add empty lines into wordlist
         if(!word.isEmpty()){
-            System.out.println(word);
             words.add(word);
         }
+        // Recursive Step
         for (int i = 0; i < letters.length(); i++) {
             if (i == 0) {
                 makeWords(word + letters.charAt(i), letters.substring(i + 1));
@@ -72,34 +75,46 @@ public class SpellingBee {
     //  that will find the substrings recursively.
     public void sort(){
         // YOUR CODE HERE
-        words = mergeSort(0, words.size());
-
+        words = mergeSort(0, words.size() - 1);
     }
+    // Merge Sort to sort words lexicographyically
     public ArrayList<String> mergeSort(int low, int high){
+        // Base case
         if(low == high){
             ArrayList<String> temp = new ArrayList<String>();
             temp.add(words.get(low));
             return temp;
         }
         int med = (low + high) / 2;
+        // Recursive Step
         ArrayList<String> tempOne = new ArrayList<String>();
         tempOne = mergeSort(low, med);
         ArrayList<String> tempTwo = new ArrayList<String>();
         tempTwo = mergeSort(med + 1, high);
-
-        return
+        return merge(tempOne, tempTwo);
 
     }
+    // Returns a sorted ArrayList
     public ArrayList<String> merge(ArrayList<String> temp, ArrayList<String> tempTwo){
         ArrayList<String> merged = new ArrayList<String>();
         int a = 0;
         int b = 0;
-        while(a < temp.size() && b < tempTwo.size()){
-            if(temp.get(a).compareTo(tempTwo.get(b)) < 0){
+        while(a < temp.size() && b < tempTwo.size()) {
+            if (temp.get(a).compareTo(tempTwo.get(b)) < 0) {
                 merged.add(temp.get(a));
-
+                a++;
+            } else {
+                merged.add(tempTwo.get(b));
+                b++;
             }
         }
+        while(a < temp.size()){
+            merged.add(temp.get(a++));
+        }
+        while(b < tempTwo.size()){
+            merged.add(tempTwo.get(b++));
+        }
+        return merged;
     }
 
     // Removes duplicates from the sorted list.
@@ -116,9 +131,32 @@ public class SpellingBee {
 
     // TODO: For each word in words, use binary search to see if it is in the dictionary.
     //  If it is not in the dictionary, remove it from words.
+    // Checks if each word in words is an actual word
     public void checkWords() {
-        // YOUR CODE HERE
+        for(int i = 0; i < words.size(); i++){
+            if(!binarySearch(words.get(i))){
+                words.remove(i);
+                i--;
+            }
+        }
     }
+    // Binary search to find if word is an actual word inside DICTIONARY
+    public boolean binarySearch(String word) {
+        int low = 0;
+        int high = DICTIONARY_SIZE;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (word.equals(DICTIONARY[mid])) {
+                return true;
+            } else if (word.compareTo(DICTIONARY[mid]) < 0) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return false;
+    }
+
 
     // Prints all valid words to wordList.txt
     public void printWords() throws IOException {
